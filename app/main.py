@@ -3,10 +3,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.database import Base, engine
 from app.models.user import User  
 from app.routes import auth
-
+from fastapi.staticfiles import StaticFiles
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="GeoPulse API")
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
 
 app.add_middleware(
     CORSMiddleware,

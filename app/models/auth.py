@@ -12,7 +12,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("ALGORITHM", "HS256")
 
 if not SECRET_KEY:
-    raise RuntimeError("SECRET_KEY manquante dans le fichier .env")
+    raise RuntimeError("SECRET_KEY manquante dans le fichier ")
 
 def hash_password(password):
     return pwd_context.hash(password)

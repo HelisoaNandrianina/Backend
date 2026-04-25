@@ -26,6 +26,7 @@ class UserResponse(BaseModel):
     email: str
     role: int
     status: str
+    photo_url: str | None = None
 
     class Config:
         from_attributes = True

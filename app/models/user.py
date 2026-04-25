@@ -13,4 +13,5 @@ class User(Base):
     role       = Column(Integer, default=2)              # 1=admin, 2=analyst
     status     = Column(String, default="active")
 
+    photo_url  = Column(String, nullable=True)         
     last_login = Column(DateTime, default=datetime.datetime.utcnow)
