@@ -1,7 +1,9 @@
 from pydantic import BaseModel, EmailStr, field_validator
 
+
 class RegisterSchema(BaseModel):
-    name: str
+    first_name: str
+    last_name: str
     email: EmailStr
     password: str
     role: int = 2
@@ -12,17 +14,18 @@ class RegisterSchema(BaseModel):
             raise ValueError("Rôle invalide")
         return v
 
+
 class LoginSchema(BaseModel):
     email: EmailStr
     password: str
 
-class TokenResponse(BaseModel):
-    access_token: str
-    token_type: str = "bearer"
 
+# ⚠️ UserResponse doit être déclaré AVANT TokenResponse
 class UserResponse(BaseModel):
     id: int
-    name: str
+    first_name: str
+    last_name: str
+    name: str | None
     email: str
     role: int
     status: str
@@ -30,3 +33,9 @@ class UserResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+    user: UserResponse          # ✅ UserResponse est connu ici

@@ -8,17 +8,18 @@ import datetime, shutil, os, uuid
 
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
-UPLOAD_DIR = "static/photos_pdp" 
+UPLOAD_DIR = "static/photos_pdp"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 
-@router.post("/register", response_model=UserResponse, status_code=201)
+@router.post("/register", response_model=TokenResponse, status_code=201)
 def register(
-    name: str = Form(...),
+    first_name: str = Form(...),
+    last_name: str = Form(...),
     email: str = Form(...),
     password: str = Form(...),
     role: int = Form(2),
-    photo: UploadFile = File(None),  # ← optionnel
+    photo: UploadFile = File(None),
     db: Session = Depends(get_db)
 ):
     if role not in [1, 2]:
@@ -27,7 +28,6 @@ def register(
     if db.query(User).filter(User.email == email).first():
         raise HTTPException(status_code=400, detail="Email déjà utilisé")
 
-    # Sauvegarde de la photo
     photo_url = None
     if photo and photo.filename:
         ext = photo.filename.split(".")[-1]
@@ -38,16 +38,20 @@ def register(
         photo_url = f"/{path}"
 
     user = User(
-        name=name,
+        first_name=first_name,
+        last_name=last_name,
+        name=f"{first_name} {last_name}",
         email=email,
         password=hash_password(password),
         role=role,
-        photo_url=photo_url  # ← à ajouter dans votre modèle SQLAlchemy
+        photo_url=photo_url
     )
     db.add(user)
     db.commit()
     db.refresh(user)
-    return user
+
+    token = create_token({"sub": user.email, "id": user.id, "role": user.role})
+    return TokenResponse(access_token=token, user=user) 
 
 
 @router.post("/login", response_model=TokenResponse)
@@ -56,9 +60,8 @@ def login(body: LoginSchema, db: Session = Depends(get_db)):
     if not user or not verify_password(body.password, user.password):
         raise HTTPException(status_code=401, detail="Identifiants invalides")
 
-    # Mettre à jour last_login
     user.last_login = datetime.datetime.utcnow()
     db.commit()
 
     token = create_token({"sub": user.email, "id": user.id, "role": user.role})
-    return {"access_token": token, "token_type": "bearer"}
+    return TokenResponse(access_token=token, user=user)  
