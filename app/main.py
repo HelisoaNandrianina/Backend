@@ -1,12 +1,26 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.database import Base, engine
-from app.models.user import User  
-from app.routes import auth
 from fastapi.staticfiles import StaticFiles
+
+from app.database import Base, engine
+from app.models.user import User
+from app.models.sync import MobilityTrip, SyncJob
+from app.routes import auth, sync
+from app.services.scheduler import start_scheduler, stop_scheduler
+
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="GeoPulse API")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    start_scheduler()
+    yield
+    await stop_scheduler()
+
+
+app = FastAPI(title="GeoPulse API", lifespan=lifespan)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
@@ -19,6 +33,7 @@ app.add_middleware(
 )
 
 app.include_router(auth.router)
+app.include_router(sync.router)
 
 @app.get("/")
 def home():
