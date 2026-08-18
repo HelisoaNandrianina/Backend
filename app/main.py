@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.database import Base, engine
 from app.models.user import User  
+from app.models.token import TokenBlacklist, PasswordResetToken
 from app.routes import auth
 from fastapi.staticfiles import StaticFiles
 Base.metadata.create_all(bind=engine)
