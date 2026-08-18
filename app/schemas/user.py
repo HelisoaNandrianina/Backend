@@ -51,3 +51,34 @@ class ResetPasswordSchema(BaseModel):
 
 class MessageResponse(BaseModel):
     message: str
+
+
+class InviteUserSchema(BaseModel):
+    first_name: str
+    last_name: str
+    email: EmailStr
+    role: int = 2
+
+    @field_validator("role")
+    def role_valide(cls, v):
+        if v not in [1, 2]:
+            raise ValueError("Rôle invalide")
+        return v
+
+
+class UserUpdateSchema(BaseModel):
+    role: int | None = None
+    status: str | None = None
+
+    @field_validator("role")
+    def role_valide(cls, v):
+        if v is not None and v not in [1, 2]:
+            raise ValueError("Rôle invalide")
+        return v
+
+
+class UserListResponse(BaseModel):
+    items: list[UserResponse]
+    total: int
+    page: int
+    page_size: int

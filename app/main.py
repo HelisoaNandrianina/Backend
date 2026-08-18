@@ -8,7 +8,7 @@ from app.database import Base, engine
 from app.models.user import User
 from app.models.sync import MobilityTrip, SyncJob
 from app.models.token import TokenBlacklist, PasswordResetToken
-from app.routes import auth, sync
+from app.routes import auth, sync, users
 from app.services.scheduler import start_scheduler, stop_scheduler
 
 Base.metadata.create_all(bind=engine)
@@ -35,6 +35,7 @@ app.add_middleware(
 
 app.include_router(auth.router)
 app.include_router(sync.router)
+app.include_router(users.router)
 
 @app.get("/")
 def home():
