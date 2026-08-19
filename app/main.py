@@ -11,7 +11,8 @@ from app.models.sync import MobilityTrip, SyncJob
 from app.models.token import TokenBlacklist, PasswordResetToken
 from app.models.datapoint import DataPoint
 from app.models.zone import Zone
-from app.routes import auth, sync, users, datapoints, zones
+from app.routes import auth, sync, users, datapoints, zones, dashboard, analysis
+from app.routes import map as map_routes
 from app.services.scheduler import start_scheduler, stop_scheduler
 
 Base.metadata.create_all(bind=engine)
@@ -45,6 +46,9 @@ app.include_router(sync.router)
 app.include_router(users.router)
 app.include_router(datapoints.router)
 app.include_router(zones.router)
+app.include_router(dashboard.router)
+app.include_router(analysis.router)
+app.include_router(map_routes.router)
 
 @app.get("/")
 def home():

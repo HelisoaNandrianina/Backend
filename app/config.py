@@ -18,6 +18,11 @@ class Settings(BaseSettings):
     SMTP_FROM_NAME: str = "Support"
     SMTP_USE_TLS: bool = True
 
+    MAP_DEFAULT_LAT: float = -18.910
+    MAP_DEFAULT_LNG: float = 47.537
+    MAP_DEFAULT_ZOOM: float = 12
+    MAP_TILE_STYLE_URL: str = "https://tiles.openfreemap.org/styles/liberty"
+
     class Config:
         env_file = ".env"
         extra = "ignore"
