@@ -16,7 +16,9 @@ from app.routes import map as map_routes
 from app.services.scheduler import start_scheduler, stop_scheduler
 from app.models.notification import Notification
 from app.routes import auth, sync, users, datapoints, zones, dashboard, analysis, notifications
-
+from app.models.analysis_job import AnalysisJob
+from app.models.recommendation import Recommendation
+from app.routes import auth, sync, users, datapoints, zones, dashboard, analysis, notifications, decision
 Base.metadata.create_all(bind=engine)
 
 
@@ -52,6 +54,7 @@ app.include_router(dashboard.router)
 app.include_router(analysis.router)
 app.include_router(map_routes.router)
 app.include_router(notifications.router)
+app.include_router(decision.router)
 
 @app.get("/")
 def home():
