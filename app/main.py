@@ -19,6 +19,8 @@ from app.routes import auth, sync, users, datapoints, zones, dashboard, analysis
 from app.models.analysis_job import AnalysisJob
 from app.models.recommendation import Recommendation
 from app.routes import auth, sync, users, datapoints, zones, dashboard, analysis, notifications, decision
+from app.models.report import Report
+from app.routes import auth, sync, users, datapoints, zones, dashboard, analysis, notifications, decision, reports
 Base.metadata.create_all(bind=engine)
 
 
@@ -55,6 +57,7 @@ app.include_router(analysis.router)
 app.include_router(map_routes.router)
 app.include_router(notifications.router)
 app.include_router(decision.router)
+app.include_router(reports.router)
 
 @app.get("/")
 def home():
