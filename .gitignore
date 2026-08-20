@@ -30,3 +30,6 @@ __pycache__/
 .venv/
 venv/
 *.egg-info/
+rapport_test.xlsx
+static/reports/
+test.ps1

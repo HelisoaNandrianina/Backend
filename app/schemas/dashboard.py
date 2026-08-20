@@ -26,3 +26,22 @@ class ActivityItemSchema(BaseModel):
     type: Literal["sync", "point_created"]
     message: str
     timestamp: datetime
+
+class AdvancedZoneStatSchema(BaseModel):
+    zone: str
+    score: float
+    revenue: float
+    points_count: int
+
+
+class ScoreRevenuePointSchema(BaseModel):
+    zone: str
+    score: float
+    revenue: float
+
+
+class TopPerformanceItemSchema(BaseModel):
+    rank: int
+    zone: str
+    score: float
+    revenue: float
