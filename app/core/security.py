@@ -40,11 +40,16 @@ def get_current_user(
     db: Session = Depends(get_db),
 ):
     from app.models.user import User
+    from app.models.token import TokenBlacklist
 
     try:
         payload = decode_token(credentials.credentials)
     except JWTError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token invalide")
+
+    jti = payload.get("jti")
+    if jti and db.query(TokenBlacklist).filter(TokenBlacklist.jti == jti).first():
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token invalide ou expiré")
 
     user = db.query(User).filter(User.id == payload.get("id")).first()
     if not user:
